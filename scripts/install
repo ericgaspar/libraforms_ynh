@@ -27,16 +27,6 @@ ynh_setup_source --dest_dir="$install_dir"
 chown -R "$app:www-data" "$install_dir"
 
 #=================================================
-# APP INITIAL CONFIGURATION
-#=================================================
-ynh_script_progression --message="Adding $app's configuration files..." --weight=1
-
-ynh_add_config --template=".env" --destination="$install_dir/.env"
-
-chmod 600 $install_dir/.env
-chown $app:www-data "$install_dir/.env"
-
-#=================================================
 # CONFIGURE THEN INSTALL SCRIPT AND DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing service script..." --weight=1
@@ -44,8 +34,19 @@ ynh_script_progression --message="Installing service script..." --weight=1
 mkdir "$install_dir/venv"
 python3 -m venv "$install_dir/venv"
 $install_dir/venv/bin/pip3 install -r "$install_dir/requirements.txt"
+$install_dir/venv/bin/flask database create-tables
+encryption=($install_dir/venv/bin/flask flask cryptokey create)
 
-#flask database create-tables
+#=================================================
+# APP INITIAL CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding $app's configuration files..." --weight=1
+
+ynh_add_config --template=".env" --destination="$install_dir/.env"
+ynh_add_config --template="gunicorn.py" --destination="$install_dir/gunicorn.py"
+
+chmod 600 $install_dir/.env $install_dir/gunicorn.py
+chown $app:www-data "$install_dir/.env" $install_dir/gunicorn.py
 
 #=================================================
 # SYSTEM CONFIGURATION
@@ -56,7 +57,7 @@ ynh_script_progression --message="Adding system configurations related to $app..
 ynh_add_nginx_config
 
 # Create a dedicated systemd config
-#ynh_add_systemd_config
+ynh_add_systemd_config
 
 #=================================================
 # START SYSTEMD SERVICE
@@ -64,7 +65,7 @@ ynh_add_nginx_config
 ynh_script_progression --message="Starting $app's systemd service..." --weight=1
 
 # Start a systemd service
-#ynh_systemd_action --service_name="$app" --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name="$app" --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # END OF SCRIPT
