@@ -36,7 +36,7 @@ python3 -m venv "$install_dir/venv"
 $install_dir/venv/bin/pip3 install -r "$install_dir/requirements.txt"
 
 pushd $install_dir/
-	./$install_dir/venv/bin/flask database create-tables
+	./venv/bin/flask database create-tables
 popd
 
 encryption=(./$install_dir/venv/bin/flask flask cryptokey create)
