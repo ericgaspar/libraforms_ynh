@@ -34,12 +34,8 @@ ynh_script_progression --message="Installing service script..." --weight=1
 mkdir "$install_dir/venv"
 python3 -m venv "$install_dir/venv"
 $install_dir/venv/bin/pip3 install -r "$install_dir/requirements.txt"
-
-pushd $install_dir/
-	./venv/bin/flask database create-tables
-popd
-
-encryption=(./$install_dir/venv/bin/flask flask cryptokey create)
+#$install_dir/venv/bin/flask database create-tables
+#encryption=($install_dir/venv/bin/flask flask cryptokey create)
 
 #=================================================
 # APP INITIAL CONFIGURATION
