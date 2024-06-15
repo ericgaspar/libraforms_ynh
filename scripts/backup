@@ -20,13 +20,6 @@ ynh_print_info --message="Declaring files to be backed up..."
 ynh_backup --src_path="$install_dir"
 
 #=================================================
-# BACKUP THE DATA DIR
-#=================================================
-
-### Only relevant if there is a "data_dir" resource for this app
-ynh_backup --src_path="$data_dir" --is_big
-
-#=================================================
 # SYSTEM CONFIGURATION
 #=================================================
 
@@ -35,13 +28,6 @@ ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 # Backup the systemd service unit
 ynh_backup --src_path="/etc/systemd/system/$app.service"
-
-# Backup the logrotate configuration
-ynh_backup --src_path="/etc/logrotate.d/$app"
-
-# Backup the Fail2Ban config
-ynh_backup --src_path="/etc/fail2ban/jail.d/$app.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
 
 #=================================================
 # BACKUP VARIOUS FILES
@@ -54,9 +40,9 @@ ynh_backup --src_path="/var/log/$app/"
 #=================================================
 # BACKUP THE MYSQL DATABASE
 #=================================================
-ynh_print_info --message="Backing up the MySQL database..."
+ynh_print_info --message="Backing up the PostgreSQL database..."
 
-ynh_mysql_dump_db --database="$db_name" > db.sql
+ynh_psql_dump_db --database="$db_name" > db.sql
 
 #=================================================
 # END OF SCRIPT
