@@ -14,6 +14,9 @@ source /usr/share/yunohost/helpers
 key=$(ynh_string_random --length=64)
 ynh_app_setting_set --app=$app --key=key --value=$key
 
+email=$(ynh_user_get_info --username=$admin --key=mail)
+timezone="$(cat /etc/timezone)"
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
